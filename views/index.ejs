@@ -1,0 +1,50 @@
+<%-include('header')%>
+
+  <div>
+    <h2>Enter Car Details</h2>
+    <div class="form-group" style="margin-top: 20px;">
+      <label for="carMake">Make:</label>
+      <input type="text" class="form-control" id="carMake" placeholder="Make" name="carMake">
+    </div>
+    <div class="form-group" style="margin-top: 20px;">
+      <label for="carModel">Model:</label>
+      <input type="text" class="form-control" id="carModel" placeholder="Model" name="carModel">
+    </div>
+    <div class="form-group" style="margin-top: 20px;">
+      <label for="carYear">Year:</label>
+      <input type="number" class="form-control" id="carYear" placeholder="Year" name="carYear">
+    </div>
+    <button type="button" class="btn btn-primary" onclick="insertIntoCarDb()" style="margin-top: 20px;">Insert</button>
+  </div>
+
+  <script>
+    function insertIntoCarDb() {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+  
+      const urlencoded = new URLSearchParams();
+      urlencoded.append("make", document.getElementById("carMake").value);
+      urlencoded.append("model", document.getElementById("carModel").value);
+      urlencoded.append("year", document.getElementById("carYear").value);
+  
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: urlencoded,
+        redirect: "follow"
+      };
+  
+      fetch("http://localhost:3000/car", requestOptions)
+        .then((response) => response.text())
+        .then((result) => {
+          console.log(result);
+          document.getElementById("carMake").value = '';
+          document.getElementById("carModel").value = '';
+          document.getElementById("carYear").value = '';
+        })
+        .catch((error) => console.error(error));
+    }
+  </script>
+</body>
+
+</html>

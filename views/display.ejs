@@ -1,0 +1,71 @@
+<%-include('header')%>
+
+<section id="table">
+    <h2>Car Details</h2>
+
+    <table id="carTable" class="table">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Make</th>
+          <th>Model</th>
+          <th>year</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Data will be inserted here -->
+      </tbody>
+    </table>
+  </section>
+</body>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        getCarDetails();
+    });
+
+    function getCarDetails() {
+      fetch("http://localhost:3000/car")
+        .then((response) => response.json())
+        .then((data) => {
+          const tableBody = document.querySelector("#carTable tbody");
+          tableBody.innerHTML = ""; 
+
+          data.forEach((car) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${car.id}</td>
+              <td>${car.make}</td>
+              <td>${car.model}</td>
+              <td>${car.year}</td>
+              <td>
+                <a href='/car/${car.id}/edit' <button type="button" class="btn btn-primary">Edit</button></a>
+                <button type="button" class="btn btn-danger" onclick="deleteCar(${car.id})">Delete</button>
+               </td>
+            `;
+            tableBody.appendChild(row);
+          });
+        })
+        .catch((error) => console.error(error));
+    }
+
+    function deleteCar(carId) {
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        const requestOptions = {
+            method: "DELETE",
+            headers: myHeaders
+        };
+
+        fetch(`http://localhost:3000/car/${carId}/delete`, requestOptions)
+            .then((response) => response.text())
+            .then((result) => {
+                console.log(result);
+                getCarDetails(); 
+            })
+            .catch((error) => console.error(error));
+    }
+</script>
+</html>
